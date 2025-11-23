@@ -1,0 +1,16 @@
+# ~/projects/nats/docker-compose.yml
+# usage: docker-compose up
+
+version: "3.4"
+
+services:
+  nats:
+    image: nats:latest
+    ports:
+      - 4222:4222
+      - 8222:8222
+    stdin_open: true
+  busybox:
+    image: busybox:latest
+    stdin_open: true
+

@@ -1,0 +1,31 @@
+version: "3.4"
+
+services:
+  active-record:
+    environment:
+    - PB_SERVER_TYPE=protobuf/nats/runner
+    build:
+      context: ./active-record
+      dockerfile: ../Dockerfile
+    command: bundle exec rpc_server start -p 9399 -o active-record ./config/environment.rb
+    volumes:
+    - ./active-record:/usr/src/service
+    depends_on:
+    - nats
+  active-remote:
+    environment:
+    - PB_CLIENT_TYPE=protobuf/nats/client
+    build:
+      context: ./active-remote
+      dockerfile: ../Dockerfile
+    command: bundle exec puma -C config/puma.rb
+    ports:
+    - 3000:3000
+    volumes:
+    - ./active-remote:/usr/src/service
+    depends_on:
+    - nats
+  nats:
+    image: nats:latest
+    ports:
+    - 8222:8222
